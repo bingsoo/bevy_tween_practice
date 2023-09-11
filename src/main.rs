@@ -25,7 +25,6 @@ impl Lens<OrthographicProjection> for TransformProjectionLens {
     fn lerp(&mut self, target: &mut OrthographicProjection, ratio: f32) {
         let value = self.start + (self.end - self.start) * ratio;
         target.scale = value;
-        println!("tweening! {}", value)
     }
 }
 
@@ -76,7 +75,6 @@ fn setup(
         let c1 = commands
             .spawn(MaterialMesh2dBundle {
                 mesh: meshes.add(shape::Circle::new(10.).into()).into(),
-                // 4. Put something bright in a dark environment to see the effect
                 material: materials.add(ColorMaterial::from(Color::rgb(7.5, 0.0, 7.5))),
                 transform: Transform::from_translation(Vec3::new(-500., space * (i as f32), 0.)),
                 ..default()
@@ -96,24 +94,6 @@ fn setup(
 
         commands.entity(parent).push_children(&[c1, c2]);
     }
-
-    // UI
-    commands.spawn(
-        TextBundle::from_section(
-            "",
-            TextStyle {
-                font_size: 18.0,
-                color: Color::WHITE,
-                ..default()
-            },
-        )
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            bottom: Val::Px(10.0),
-            left: Val::Px(10.0),
-            ..default()
-        }),
-    );
 }
 
 fn update_parent(
@@ -134,14 +114,8 @@ fn update_parent(
         if keycode.just_pressed(KeyCode::P) {
             println!("passed here");
             let tween = Tween::new(
-                // Use a quadratic easing on both endpoints.
                 EaseFunction::QuadraticInOut,
-                // Animation time (one way only; for ping-pong it takes 2 seconds
-                // to come back to start).
                 Duration::from_secs(5),
-                // The lens gives the Animator access to the Transform component,
-                // to animate it. It also contains the start and end values associated
-                // with the animation ratios 0. and 1.
                 TransformPositionLens {
                     start: transform.translation,
                     end: Vec3::new(0., transform.translation.y - 2000., 0.),
@@ -211,5 +185,3 @@ fn zoom_2d(
 
     //println!("camera scale = {}", projection.scale);
 }
-
-//fn move_camera(mut camera: Query<&mut Transform, With<MyGameCamera>>) {}
