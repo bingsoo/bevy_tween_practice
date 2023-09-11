@@ -59,21 +59,6 @@ fn setup(
         BloomSettings::default(), // 3. Enable bloom for the camera
     ));
 
-    let tween = Tween::new(
-        // Use a quadratic easing on both endpoints.
-        EaseFunction::QuadraticInOut,
-        // Animation time (one way only; for ping-pong it takes 2 seconds
-        // to come back to start).
-        Duration::from_secs(60),
-        // The lens gives the Animator access to the Transform component,
-        // to animate it. It also contains the start and end values associated
-        // with the animation ratios 0. and 1.
-        TransformPositionLens {
-            start: Vec3::new(0., -500.0, 0.),
-            end: Vec3::new(0., -5500.0, 0.),
-        },
-    );
-
     let parent = commands
         .spawn((
             SpatialBundle {
@@ -82,7 +67,6 @@ fn setup(
                 ..default()
             },
             Parent,
-            Animator::new(tween),
         ))
         .id();
 
@@ -138,11 +122,13 @@ fn update_parent(
     mut commands: Commands,
 ) {
     for (id, mut transform) in &mut parent_position {
+        transform.translation.y -= 1.0;
+
         if keycode.pressed(KeyCode::Y) {
-            transform.translation.y += 3.0;
+            transform.translation.y += 9.0;
         }
         if keycode.pressed(KeyCode::H) {
-            transform.translation.y -= 3.0;
+            transform.translation.y -= 8.0;
         }
 
         if keycode.just_pressed(KeyCode::P) {
@@ -188,14 +174,8 @@ fn zoom_2d(
     }
     if keycode.just_pressed(KeyCode::Key4) {
         let ttt = Tween::new(
-            // Use a quadratic easing on both endpoints.
             EaseFunction::QuadraticInOut,
-            // Animation time (one way only; for ping-pong it takes 2 seconds
-            // to come back to start).5
             Duration::from_millis(CAMERA_MOVE_TIME),
-            // The lens gives the Animator access to the Transform component,
-            // to animate it. It also contains the start and end values associated
-            // with the animation ratios 0. and 1.
             TransformProjectionLens {
                 start: projection.scale,
                 end: 0.9,
@@ -207,14 +187,8 @@ fn zoom_2d(
     }
     if keycode.just_pressed(KeyCode::Key5) {
         let ttt = Tween::new(
-            // Use a quadratic easing on both endpoints.
-            EaseFunction::QuadraticInOut,
-            // Animation time (one way only; for ping-pong it takes 2 seconds
-            // to come back to start).5
+            EaseFunction::ExponentialInOut,
             Duration::from_millis(CAMERA_MOVE_TIME),
-            // The lens gives the Animator access to the Transform component,
-            // to animate it. It also contains the start and end values associated
-            // with the animation ratios 0. and 1.
             TransformProjectionLens {
                 start: projection.scale,
                 end: 1.1,
