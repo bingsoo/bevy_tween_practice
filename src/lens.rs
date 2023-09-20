@@ -274,13 +274,6 @@ pub struct TransformRotateAxisLens {
     pub end: f32,
 }
 
-impl Lens<Transform> for TransformRotateAxisLens {
-    fn lerp(&mut self, target: &mut Transform, ratio: f32) {
-        let angle = (self.end - self.start).mul_add(ratio, self.start);
-        target.rotation = Quat::from_axis_angle(self.axis, angle);
-    }
-}
-
 /// A lens to manipulate the [`scale`] field of a [`Transform`] component.
 ///
 /// [`scale`]: https://docs.rs/bevy/0.11.0/bevy/transform/components/struct.Transform.html#structfield.scale
